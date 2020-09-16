@@ -1,0 +1,63 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+
+#%%
+n0=100 #initial population
+r=2 #max reproduction rate
+pmax=50 #total number of years
+x0=100/1000 #initial normalized population
+xp=np.zeros(50)
+nmax=1000 #max pop of insects sustainable
+
+xp[0]=x0
+
+'''
+def normpop(v):
+    v_next=r*(1-v)*v'''
+
+#%%  
+#normpop(xp)
+
+for i in range(49):
+    xp[i+1]=r*(1-xp[i])*xp[i]
+
+r2=3
+xp2=np.zeros(50)
+xp2[0]=x0
+for i in range(49):
+    xp2[i+1]=r2*(1-xp2[i])*xp2[i]
+    
+r3=4
+xp3=np.zeros(50)
+xp3[0]=x0
+for i in range(49):
+    xp3[i+1]=r3*(1-xp3[i])*xp3[i]
+print(xp) 
+
+plt.plot(np.arange(0,50,1), xp, label="r=2")
+plt.plot(np.arange(0,50,1), xp2, label="r=3")
+plt.plot(np.arange(0,50,1), xp3, label="r=4")
+plt.title("Population of Insects Over Time")
+plt.xlabel("Number of Years")
+plt.ylabel("Number of Insects")
+plt.legend()
+#could i just pseudocode this or is this not as a function of p?
+
+#%%
+r_new=np.arange(2, 4, 0.1)
+pmax_new=2000
+#bifurcation
+plt.figure(2)
+plt.plot(xp, np.arange(0,50,1), label="r=2")
+plt.plot(xp2, np.arange(0,50,1), label="r=3")
+plt.plot(xp3,np.arange(0,50,1), label="r=4")
+plt.title("Population of Insects Over Time")
+plt.ylabel("Number of Years")
+plt.xlabel("Number of Insects")
+plt.legend()
+
+#len(ns-5:)
+
+
+
