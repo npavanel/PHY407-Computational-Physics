@@ -1,0 +1,199 @@
+2. a) Write a pseudocode to compute and plot, as a function of the number of years p, the
+evolution of a population of insects described by eqn. (12).
+
+#Pseudocode:
+#Define initial normalized population x0 between [0,1] and the reproduction rate r
+#Define an array for the years p starting at 0 until some pmax (say pmax=50 years)
+#Define an array of zeros the length of pmax for xp
+#Set the first element of the array xp to x0
+#For pmax # of iterations:
+#   Calaculate the next xp value using the previous value according to equation (12)
+#Plot xp vs. p (p on x-axis, xp on y-axis)
+#Label axes and plot
+
+b) nothing to submit
+
+c) 
+For low values of r, specifically r=2 and 2=2.5, the evolution of the population increases steadily until it is saturated. Once saturated, the population remains steady. As r increases, 
+the maximum population also increases as can be seen from Fig. (1) - the normalized population goes from a maximum of approximately 0.7 with r=3 to 1.0 with r=4. Furthermore, when r$\geq$3, 
+the normalized population oscillates, dipping down to lower numbers and back up to higher numbers repeatedly. The higher the r value, the more extreme the oscillations are.
+
+d)Both Figures 1 and 2 show that higher values of r lead to what appears to be random fluctuations in the insect population. A period doubling bifurcation occurs at approximately 
+r=3 in Fig. 2 where the data splits and begins oscillating between values of xp. This corresponds to the oscillating that is seen for r=3 in Fig. 1 with a period of about 2 years. 
+Another period doubling bifurcation occurs at approximately r=3.45, where the data splits again, now oscillating between four values of xp. In fig.1 this can be seen for r=3.5, 
+where the data oscillates between four values of xp, with the period now doubled at approximately 4 years. At approx. r=3.55 the periodicity of the oscillations turn into chaos, 
+with no distinct period or patterns. This is seen in Figure 1 for r=4 as there is no identifiable period and the system seems to rise and fall at random. 
+
+e)Figure 3 shows that there is a stable region within the chaotic region around $3.738 \leq r \leq 3.745$. 
+The system stabilizes and begins oscillating between 5 values of xp, and bifurcations occur around 3.741. more to say?? 
+code:
+
+import numpy as np
+import matplotlib.pyplot as plt
+#define constants
+n0=100 #initial population
+r=2 #max reproduction rate
+pmax=50 #total number of years
+x0=100/1000 #initial normalized population
+xp=np.zeros(50) #empty array for the xp values to go in later
+nmax=1000 #max pop of insects sustainable
+
+#set first value of xp as the initial x0
+xp[0]=x0
+
+#%%  
+#2c
+#compute equation 12 for 50 years/iterations
+for i in range(49):
+    xp[i+1]=r*(1-xp[i])*xp[i]
+
+#repeat for different r values
+r2=3
+xp2=np.zeros(50)
+xp2[0]=x0
+for i in range(49):
+    xp2[i+1]=r2*(1-xp2[i])*xp2[i]
+    
+r3=4
+xp3=np.zeros(50)
+xp3[0]=x0
+for i in range(49):
+    xp3[i+1]=r3*(1-xp3[i])*xp3[i]
+    
+r4=2.5
+xp4=np.zeros(50)
+xp4[0]=x0
+for i in range(49):
+    xp4[i+1]=r4*(1-xp4[i])*xp4[i]
+r5=3.5
+xp5=np.zeros(50)
+xp5[0]=x0
+for i in range(49):
+    xp5[i+1]=r5*(1-xp5[i])*xp5[i]
+
+#plot figure with years on x-axis and xp on yaxis
+plt.figure(1)
+plt.style.use('ggplot')
+plt.plot(np.arange(0,50,1), xp, label="r=2")
+plt.plot(np.arange(0,50,1), xp4, label="r=2.5")
+plt.plot(np.arange(0,50,1), xp2, label="r=3")
+plt.plot(np.arange(0,50,1), xp5, label="r=3.5")
+plt.plot(np.arange(0,50,1), xp3, label="r=4")
+plt.title("Population of Insects Over Time")
+plt.xlabel("Number of Years")
+plt.ylabel("Number of Insects")
+plt.legend()
+
+#%%
+#2d
+#define new values of constants according to the question
+r_new=np.arange(2, 4, 0.005)
+pmax_new=2000
+xp_new=np.zeros([400, 2000]) #2d array of zeros
+
+#set the first column to be x0, each row is xp for a different value of r
+for i in range(400):
+    xp_new[i,0]=x0
+    
+#calculate equation 12 for 400 different xp's over 2000 years
+for i in range(1999):
+    for j in range(400):
+        xp_new[j, i+1]=r_new[j]*(1-xp_new[j,i])*xp_new[j,i]
+
+#bifurcation plot
+plt.figure(2)
+for i in range(200):
+    plt.scatter(np.ones([100,1], float)*r_new[i], xp_new[i][1900:2000], s=0.3) #plots last 100 xps
+for i in range(200, 400, 1): 
+    plt.scatter(np.ones([1000,1], float)*r_new[i], xp_new[i][1000:2000], s=0.3)#plots last 1000 xps
+plt.title("Population of Insects Over Time")
+plt.ylabel("Insect Population")
+plt.xlabel("Bifurcation Parameter r")
+
+#%%
+#2e 
+#define a new r array between the values stated in the question
+r_e=np.arange(3.738, 3.745, 1e-5)
+
+#2d array of xps, each row is xp for a different value of r, with 2000 columns for the years
+xp_e=np.zeros([len(r_e), 2000])
+
+#set first column to x0
+for i in range(len(r_e)):
+    xp_e[i,0]=x0
+    
+#calculate equation 12 for len(r_e) different xp's over 2000 years
+for i in range(1999):
+    for j in range(len(r_e)):
+        xp_e[j, i+1]=r_e[j]*(1-xp_e[j,i])*xp_e[j,i]
+
+#plot the r values vs last 1000 xp values        
+plt.figure(3)
+plt.title("Population of Insects Over Time")
+plt.ylabel("Insect Population")
+plt.xlabel("Bifurcation Parameter")
+for i in range(701):
+    plt.scatter(np.ones([1000,1], float)*r_e[i], xp_e[i][1000:2000], s=0.01)
+
+#%%
+#2f
+# import random function from random module
+from random import random
+randomNum = random()
+
+#define constants
+r_f=3.75
+x0_f1=0.1
+x0_f2=0.1 + random()/1e5 #add a random number much smaller than x0
+pmax_f=100
+
+#make empty arrays for values to be stored in later
+xp_f1=np.zeros(pmax_f)
+xp_f2=np.zeros(pmax_f)
+
+#set first element in each array to the corresponding x0
+xp_f1[0]=x0_f1
+xp_f2[0]=x0_f2
+
+
+#calculate eq 12 for both xps
+for i in range(pmax_f-1):
+        xp_f1[i+1]=r_f*(1-xp_f1[i])*xp_f1[i]
+        xp_f2[i+1]=r_f*(1-xp_f2[i])*xp_f2[i]
+        
+#plot years vs xp
+plt.figure(4)
+plt.plot(np.arange(0,pmax_f,1), xp_f1, label="x0")
+plt.plot(np.arange(0,pmax_f,1), xp_f2 , label="x0+$\epsilon$")
+plt.title("Population of Insects Over Time")
+plt.ylabel("Insect Population")
+plt.legend()
+plt.xlabel("Years")
+
+#%%
+#2g
+#calculate delta as defined in the question
+delta=np.zeros(pmax_f)
+for i in range(pmax_f-1):
+    delta[i]=np.abs(xp_f2[i]-xp_f1[i])
+
+#define an exponential function
+def expo(p):
+    expo=a*np.exp(l*p)
+    return expo
+#test values that give a good estimate
+a=5.0e-6
+l=0.45
+
+#plot years vs delta
+plt.figure(5)
+plt.semilogy(np.arange(0,pmax_f,1),np.abs(xp_f2-xp_f1), marker=".", label="Delta")
+plt.semilogy(np.arange(0,20,1), expo(np.arange(0,20,1)), label="Exponential")
+plt.xlabel("Log Difference Between Populations")
+plt.ylabel("Y (years)")
+plt.title("Difference in Populations Over Time")
+plt.legend()
+\end{verbatim}
+
+\end{document}
+
