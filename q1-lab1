@@ -1,0 +1,159 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Sep 18 14:08:31 2020
+
+@author: HayleyAgler
+"""
+
+#import needed modules
+import numpy as np
+import matplotlib.pyplot as plt
+from time import time
+from numpy import zeros
+
+N=[2,4,6,8,10,15,20,25,30,45,50,60,70,80,90,100,150,200,250,300,400,500]
+#empty arrarys for the times to be stored in
+start=[0]*len(N)
+end=[0]*len(N)
+diff=[0]*len(N)
+
+start2=[0]*len(N)
+end2=[0]*len(N)
+diff2=[0]*len(N)
+
+#do i have to multiply matrices A and B by something? you did 4 and 7 i think?
+
+for n in N:
+    for l in range(len(N)):
+        start[l]=time()
+        A = np.ones([n,n],float)
+        B = np.ones([n,n],float)
+        C = zeros([n,n],float)
+        for i in range(n):
+            for j in range(n):
+                for k in range(n):
+                    C[i,j] += A[i,k]*B[k,j]
+    
+        end[l]=time()    
+        diff[l]=end[l]-start[l]
+        
+#time using dot function
+for n in N:
+    for l in range(len(N)):
+        start2[l]=time()
+        A = np.ones([n,n],float)
+        B = np.ones([n,n],float)
+        C = zeros([n,n],float)
+        for i in range(n):
+            for j in range(n):
+                for k in range(n):
+                    C[i,j] += np.dot(A,B)
+    
+        end2[l]=time()    
+        diff2[l]=end2[l]-start2[l]
+        
+
+#repeat for N3
+
+N3=np.array([2,4,6,8,10,15,20,25,30])**3
+start3=[0]*len(N3)
+end3=[0]*len(N3)
+diff3=[0]*len(N3)
+
+start4=[0]*len(N3)
+end4=[0]*len(N3)
+diff4=[0]*len(N3)
+
+
+
+for n in N3:
+    for l in range(len(N3)):
+        start3[l]=time()
+        A = np.ones([n,n],float)
+        B = np.ones([n,n],float)
+        C = zeros([n,n],float)
+        for i in range(n):
+            for j in range(n):
+                for k in range(n):
+                    C[i,j] += A[i,k]*B[k,j]
+    
+        end3[l]=time()    
+        diff3[l]=end3[l]-start3[l]
+        
+#time using dot function
+for n in N3:
+    for l in range(len(N3)):
+        start4[l]=time()
+        A = np.ones([n,n],float)
+        B = np.ones([n,n],float)
+        C = zeros([n,n],float)
+        for i in range(n):
+            for j in range(n):
+                for k in range(n):
+                    C[i,j] += np.dot(A,B)
+    
+        end4[l]=time()    
+        diff4[l]=end4[l]-start4[l]
+        
+
+#plot a comparison between numpy matrix multiplication and numpy dot to n=500
+plt.plot(N,diff,color='orange',label='n - Matrix Multiplication')
+plt.plot(N,diff2,color='blue',label='n - Numpy Dot Product')
+plt.xlabel('Dimension of Square Matrix [n]')
+plt.ylabel('Time Taken For Computation [s]')
+plt.title('Matrix Operation Time Trials')
+plt.legend()
+plt.show()
+plt.close()
+#plot a comparison between numpy matrix multiplication and numpy dot to n=27000
+plt.plot(N3,diff3,color='red',label='$n^{3}$ - Matrix Multiplication')
+plt.plot(N3,diff4,color='black',label='$n^{3}$ - Numpy Dot Product')
+plt.xlabel('Dimension of Square Matrix [n]')
+plt.ylabel('Time Taken For Computation [s]')
+plt.title('Matrix Operation Time Trials')
+plt.legend()
+
+'''
+#tried it for diff values of N before putting it all together
+#choose values of n for the first computation
+N=2  #[2,4,6,8,10,15,20,25,30,45,50,60,70,80,90,100,150,200,250,300,400,500]
+
+start=time()
+
+A = np.ones([N,N],float)
+B = np.ones([N,N],float)
+
+C = zeros([N,N],float)
+
+for i in range(N):
+    for j in range(N):
+        for k in range(N):
+            C[i,j] += A[i,k]*B[k,j]
+
+
+end=time()
+
+diff=end-start
+
+
+#choose values of n for the first computation
+N2=4  #[2,4,6,8,10,15,20,25,30,45,50,60,70,80,90,100,150,200,250,300,400,500]
+
+start2=time()
+
+A2 = np.ones([N2,N2],float)
+B2 = np.ones([N2,N2],float)
+
+C2 = zeros([N2,N2],float)
+
+for i in range(N2):
+    for j in range(N2):
+        for k in range(N2):
+            C2[i,j] += A2[i,k]*B2[k,j]
+
+
+end2=time()
+
+diff2=end2-start2
+'''
