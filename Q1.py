@@ -40,10 +40,7 @@ positions of a planet governed by Newton's Law of Gravity
 #1c)
 #import needed modules
 import numpy as np
-import astropy.constants as c
-import astropy.units as u
 import matplotlib.pyplot as plt
-from time import time
 
 #specify timestep(dt) and total time(T)
 dt=0.0001
