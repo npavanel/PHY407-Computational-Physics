@@ -1,0 +1,132 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Sep 22 12:18:51 2020
+
+@author: HayleyAgler
+"""
+
+#lab 2 question 2 a)
+#import necessary modules
+import numpy as np
+from scipy import special
+from time import time
+# save start time
+start_trap=time()
+
+#define function we want to integrate
+def f(x):
+    return np.exp(x**2)
+
+
+#trapezoidal rule of integration
+ #number of slices
+N=32
+a=0
+b=4
+h=(b-a)/N
+
+s_trap = 0.5*f(a) + 0.5*f(b)
+for k in range(1,N):
+    s_trap += f(a+k*h)
+
+#multiply by the other part of function
+I1_trap=s_trap*h*np.exp(-4**2)
+
+# save the end time
+end_trap=time()
+# the difference is the elapsed time (in seconds)
+diff_trap=end_trap-start_trap
+
+#compute and time scipy's dawson function
+start_scipy=time()
+a2=special.dawsn(4)
+end_scipy=time()
+diff_scipy=end_scipy-start_scipy
+
+#perform integration with simpsons rule and time
+start_simp=time()
+
+s_simp=f(a)+f(b)
+#odd terms
+for k in range(1,N,2):
+    s_simp += 4*f(a+k*h)
+#even terms
+for k in range(2,N,2):
+    s_simp += 2*f(a+k*h)
+
+#multiply by other part of function
+I1_simp=s_simp*(1/3)*h*np.exp(-4**2)
+
+#compute time
+end_simp=time()
+diff_simp=end_simp-start_simp
+
+#print out values
+print("Simpsons time",diff_simp )
+print("Trapezoidal time",diff_trap )
+print("Scipys time",diff_scipy )
+#%%
+# =============================================================================
+# practical estimation
+# =============================================================================
+#define new N2 and corresponding h2
+N2=2*N
+h2=(b-a)/N2
+
+#redo the integral using trapezoidal method with the new value of N2
+s2_trap = 0.5*f(a) + 0.5*f(b)
+for k in range(1,N2):
+    s2_trap += f(a+k*h2)
+
+I2_trap=s2_trap*h2*np.exp(-4**2)
+
+#find the error using textbook eqn
+error_trap=1/3*(I2_trap-I1_trap)
+
+#redo the integral using simpsons method with the new value of N2
+s2_simp=f(a)+f(b)
+#odd terms
+for k in range(1,N2,2):
+    s2_simp += 4*f(a+k*h2)
+#even terms
+for k in range(2,N2,2):
+    s2_simp += 2*f(a+k*h2)
+    
+I2_simp=s2_simp*(1/3)*h2*np.exp(-4**2)
+
+#find the error using textbook eqn
+error_simp=1/15*(I2_simp-I1_simp)
+
+
+#%% 2ii
+
+#define trapezoidal error function
+def err_trap(c,d):
+    return 1/12*h**2*(c-d)
+
+#derivative of dawson at a, b wrt x
+#c=f'(a)
+c=1
+#d=f'(b)
+d=1-8*special.dawsn(4)
+#print the value
+print(err_trap(c,d))
+
+#N=2**14 gives 5.14e-09
+
+
+#define simpsons error fn
+def err_simp(e,f):
+    return 1/90*h**4*(e-f)
+
+#derivative of dawson at a, b wrt x
+#c=f'''(a)
+e=2*np.exp(a**2)*(2*np.exp(a**2)*(2+7*a**2)+np.sqrt(np.pi)*a*(3+2*a**2)*special.dawsn(a))
+#d=f'''(b)
+f=2*np.exp(b**2)*(2*np.exp(b**2)*(2+7*b**2)+np.sqrt(np.pi)*b*(3+2*b**2)*special.dawsn(b))
+
+#print error value
+print(err_simp(e,f))
+#N=2**21
+

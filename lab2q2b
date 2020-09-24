@@ -1,0 +1,93 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Sep 23 09:59:49 2020
+
+@author: HayleyAgler
+"""
+
+#lab2 q2 b)
+#Import necessary modules
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import special
+from matplotlib import cm
+
+#define arrays for the values of m and x
+m=np.array([0, 1, 2])
+x=np.arange(0, 20, 0.2)
+
+#define the bessel function that will perform integration with Simpsons rule
+def J(m,x):
+    #simpsons rule 
+    N=1000
+    a=0
+    b=np.pi
+    h=(b-a)/N
+    #define function to be integrated
+    def f(theta):
+        return np.cos(m*theta-x*np.sin(theta))
+
+    s=f(a)+f(b)
+    #odd terms
+    for k in range(1,N,2):
+        s += 4*f(a+k*h)
+        #even terms
+    for k in range(2,N,2):
+        s += 2*f(a+k*h)
+            
+        #compute integral
+        I1=s*(1/3)*h
+        #multiply result by 1/pi because thats part of bessel functions
+    return I1*1/np.pi
+
+#plot the functions
+plt.figure(1)
+plt.title("Bessel Functions Simpson's Rule vs. Scipy.special.jv")
+plt.xlabel("x")
+plt.ylabel("$J_m(x)$")
+plt.plot(x, J(m[0], x), label="$J_0$")
+plt.plot(x, J(m[1], x), label="$J_1$")
+plt.plot(x, J(m[2], x), label="$J_2$")
+plt.plot(x, special.jv(0,x), label="Scipy's $J_0$")
+plt.plot(x, special.jv(1,x), label="Scipy's $J_1$")
+plt.plot(x, special.jv(2,x), label="Scipy's $J_2$")
+plt.legend()
+
+#%%
+# =============================================================================
+# b in textbook
+# =============================================================================
+#define arrays of values in micrometers
+x=np.arange(-1000, 1010, 10) 
+y=np.arange(-1000, 1010, 10)
+#define an empty 2d array for radius values to be stored in
+r=np.zeros([len(x), len(x)])
+
+#calculate radii
+for i in range(len(x)):
+    for j in range(len(x)):
+        r[i,j]=np.sqrt(x[i]**2+y[j]**2)
+#define values given in question, l=lambda
+l=500 #nm
+k=(2*np.pi)/l  #units 1/r 
+
+#define the intensity function
+def intensity(r):
+    return (J(m[1], k*r)/(k*r))**2
+
+IN=intensity(r)
+#get rid of infinity caused by r=0 points      
+IN[np.isinf(IN)]=0.25
+    
+#plot density graph
+#ser vmax= low number to show more detail, and extent makes the axes right
+plt.imshow(intensity(r),  vmax=0.01, cmap=cm.hot, extent=(-1000,1000,-1000,1000))
+plt.colorbar(label="Intensity")
+plt.figure(1)
+plt.title("Diffraction Pattern of Point Light Source")
+plt.xlabel("Radius (nm)")
+plt.ylabel("Radius (nm)")
+
+
+
