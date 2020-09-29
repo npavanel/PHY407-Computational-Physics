@@ -122,20 +122,10 @@ for n in ns:
 print(' Sqrt of n=5 should equal approx. 2.35: n =',str(ns[5]),'=',str(np.sqrt(sums_1c_x[5])))
 
 #compute <p^2>
-#the derivative of the wave function uses a similar but different formula
-def h_poly_d(n,x):
-    if n < 0:
-        return -1
-    elif n == 0:
-        return 1
-    elif n == 1:
-        return 2 * x
-    else:
-        return -x * h_poly(n,x) + 2 * n * h_poly(n-1,x)
     
 #define a function to compute the harmonic oscillator wavefunction psi
 def d_psi(n,x):
-    return (1/np.sqrt(2**n * np.math.factorial(n) * np.sqrt(np.pi))) * np.exp((-x**2)/(2)) * h_poly_d(n,x)
+    return (1/np.sqrt(2**n * np.math.factorial(n) * np.sqrt(np.pi))) * np.exp((-x**2)/(2)) * (-x * h_poly(n,x) + 2 * n * h_poly(n-1,x))
 
 #define the integrand for 1c_p
 def integrand_1c_p(n,x,dx):
