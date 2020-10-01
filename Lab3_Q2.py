@@ -142,3 +142,17 @@ for n in ns:
 #compute E = 1/2 (<x^2> + <p^2>)
 E = 0.5 * (np.array(sums_1c_x) + np.array(sums_1c_p))
 
+#print out the positions momentums, energy
+print(np.sqrt(sums_1c_x))
+print(np.sqrt(sums_1c_p))
+print(E)
+
+#plot position, momentum, energy
+plt.plot(ns,np.sqrt(sums_1c_x),label='X')
+plt.plot(ns,np.sqrt(sums_1c_p),label='P')
+#plt.plot(ns,np.array(sums_1c_x)-np.array(sums_1c_p),label='X-P')
+plt.plot(ns,E,label='E')
+plt.legend()
+plt.show()
+
+
