@@ -1,0 +1,71 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Oct 21 12:43:45 2020
+
+@author: Nicholas Pavanel
+"""
+#import modules 
+import numpy as np
+import matplotlib.pyplot as plt
+
+#pseudocode
+#define all variables: G, M, L, and time domain
+#define empty lists to hold x, y values
+#define initial conditions
+#define a function to compute RHS of eqn
+#define one function that takes all variables (vx,x,vy,y) and t for RK4
+#step through time points, performing RK4 on the function
+
+#global variables
+G = 1
+M = 10
+L = 2
+#define time start and time stop, number of points in time domain, steps, and time domain
+t1= 0 
+t2=10
+N = 5000
+h = (t2 - t1) / N
+t = np.arange(t1,t2,h)
+#define lists for output info
+xs = []
+ys = []
+#define inital conditions [x,vx,y,vy]
+r = [1., 0, 0, 1.]
+
+#define RHS eqn
+def RHS(G,M,L,x_y,r):
+    return - G * M * (x_y)/(r**2 * np.sqrt(r**2 + (L**2/4))) 
+
+#define equation to use in RK4
+def f(ics,t):
+    x = ics[0]
+    vx = ics[1]
+    y = ics[2]
+    vy = ics[3]
+    r = np.sqrt(x**2 + y**2)
+    RHS_x = RHS(G,M,L,x,r)
+    RHS_y = RHS(G,M,L,y,r)
+    return np.array([vx, RHS_x, vy, RHS_y],float)
+
+#perform RK4
+for i in t:
+    xs.append(r[0])
+    ys.append(r[2])
+    k1 = h * f(r, i)
+    k2 = h * f(r + 0.5 * k1, i + 0.5 * h)
+    k3 = h * f(r + 0.5 * k2, t + 0.5 * h)
+    k4 = h * f(r + k3, t + h)
+    r += (k1 + 2 * k2 + 2 * k3 + k4) / 6
+    
+rod = plt.Circle((0.512,0.5),radius=0.0025,color='red')
+#plot figure
+axs = plt.figure(figsize=[10,8])
+axs.add_artist(rod)
+plt.plot(xs,ys,color='black',label='Bearing')
+plt.xticks(size=16)
+plt.yticks(size=16)
+plt.xlabel('x',size=18)
+plt.ylabel('y',size=18)
+plt.legend()
+#plt.savefig('Q1')
+plt.show()
