@@ -1,19 +1,7 @@
 
-
-#import sympy to differentiate for me
-import sympy as sp
 import numpy as np
 import matplotlib.pyplot as plt
 
-#define variables
-x = sp.Symbol('x')
-y = sp.Symbol('y')
-
-#diff. wrt x
-sp.diff(2 * ( (1)/(sp.sqrt(x**2 + y**2))**12 - (1)/(sp.sqrt(x**2 + y**2))**6 ),x)
-
-#diff. wrt y
-sp.diff(2 * ( (1)/(sp.sqrt(x**2 + y**2))**12 - (1)/(sp.sqrt(x**2 + y**2))**6 ),y)
 
 #pseudocode
 #define time step of dt=0.01
@@ -37,22 +25,12 @@ h = (t2-t1)/N
 t = np.arange(t1,t2,h) 
 
 
-r_p1_1, r_p2_1 = [4,4], [5.2,4] #input these in function verlet(r_p1_1,etc)
-r_p1_2, r_p2_2 = [4.5,4], [5.2,4]
-
-
-#ics_p1_3, ics_p2_3 = [2,0,3,0], [3.5,4.4,0]
-
 #gives acceleration
-
-
 def acc(x1,x2,y1,y2):
     return (-12 * (x1-x2) * ((1/(((x1-x2)**2+(y1-y2)**2)**4))-2/(((x1-x2)**2+(y1-y2)**2)**7))), (-12 * (y1-y2) * ((1/(((x1-x2)**2+(y1-y2)**2)**4))-2/(((x1-x2)**2+(y1-y2)**2)**7)))
 
 
 #verlet
-    
-
 
 def verly(x10,y10, x20, y20):
     r1=np.zeros([2,100]) 
