@@ -1,0 +1,157 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Oct 29 15:09:41 2020
+
+@author: Nicholas Pavanel
+"""
+import numpy as np
+import matplotlib.pyplot as plt
+from time import time
+
+#global variables
+G = 1
+M = 10
+L = 2
+#define time start and time stop, number of points in time domain, steps, and time domain
+t1= 0 
+t2=10
+N = 10000
+h = (t2 - t1) / N
+t = np.arange(t1,t2,h)
+#define lists for output info
+xs = []
+ys = []
+#define inital conditions [x,vx,y,vy]
+r = [1., 0, 0, 1.]
+
+#define RHS eqn
+def RHS(G,M,L,x_y,r):
+    return - G * M * (x_y)/(r**2 * np.sqrt(r**2 + (L**2/4))) 
+
+#define equation to use in RK4
+def f(ics,t):
+    x = ics[0]
+    vx = ics[1]
+    y = ics[2]
+    vy = ics[3]
+    r = np.sqrt(x**2 + y**2)
+    RHS_x = RHS(G,M,L,x,r)
+    RHS_y = RHS(G,M,L,y,r)
+    return np.array([vx, RHS_x, vy, RHS_y],float)
+
+#perform RK4
+t0 = time()
+for i in t:
+    xs.append(r[0])
+    ys.append(r[2])
+    k1 = h * f(r, i)
+    k2 = h * f(r + 0.5 * k1, i + 0.5 * h)
+    k3 = h * f(r + 0.5 * k2, t + 0.5 * h)
+    k4 = h * f(r + k3, t + h)
+    r += (k1 + 2 * k2 + 2 * k3 + k4) / 6
+t_total = time() - t0
+
+print('Time taken for static RK4 10,000 steps:',t_total,' seconds')
+    
+rod = plt.Circle((0.512,0.5),radius=0.0025,color='red')
+#plot figure
+axs = plt.figure(figsize=[10,8])
+axs.add_artist(rod)
+plt.plot(xs,ys,color='black',label='Bearing')
+plt.xticks(size=16)
+plt.yticks(size=16)
+plt.xlabel('x',size=18)
+plt.ylabel('y',size=18)
+plt.legend()
+#plt.savefig('Q1')
+plt.show()
+print(h)
+
+# define a function to perform a step of RK4 
+# adaptive RK4 is the same method with additional constraints
+def RK4_step(r, t, h):
+    k1 = h * f(r, t)
+    k2 = h * f(r + 0.5 * k1, t + 0.5 * h)
+    k3 = h * f(r + 0.5 * k2, t + 0.5 * h)
+    k4 = h * f(r + k3, t + h)
+    return (k1 + 2 * k2 + 2 * k3 + k4) / 6
+
+# define a function to perform RK4 with adaptive step size
+def RK4_adaptive(r, t, h):
+    
+    # perform 2 RK4 steps of size h
+    hstep_1 = RK4_step(r, t, h)
+    hstep_2 = RK4_step(r + hstep_1, t + h, h)
+    # add the steps of size h for one step of size 2h
+    double_2hstep = hstep_1 + hstep_2
+
+    # perform 1 RK step with size 2h
+    single_2hstep = RK4_step(r, t, 2 * h)
+    
+    # compute error estimates
+    e_x = (1/30) * (double_2hstep[0] - single_2hstep[0])
+    e_y = (1/30) * (double_2hstep[2] - single_2hstep[2])
+
+    # calculate rho
+    rho = h * delta / np.sqrt(e_x**2 + e_y**2)
+
+    # choose the next step size h
+    # if accurate enough, move on
+    if  rho >= 1:
+        t = t + 2 * h
+
+        # ensure h does not get too large 
+        if rho**(1/4) > 2:
+            h *= 2
+        else:
+            h *= rho**(1/4)
+
+        return double_2hstep, h, t
+    # if not accurate enough, do again with smaller step
+    else:
+        return RK4_adaptive(r, t, rho**(1/4) * h)
+    
+# set accuracy, arrays for output, initial values
+delta = 10**(-6)
+tpoints = []
+xpoints2 = []
+ypoints2 = []
+t = t1
+r = [1., 0, 0, 1.]
+
+# perform adaptive RK4
+t0 = time()
+while(t < t2):
+    tpoints.append(t)
+    xpoints2.append(r[0])
+    ypoints2.append(r[2])
+    delta_r, h, t = RK4_adaptive(r, t, h)
+    r += delta_r
+t_total_adaptive = time() - t0
+    
+print('Time taken for adaptive RK4 $\delta = 10^{-6}$ steps:',t_total_adaptive,' seconds')
+
+# plot adaptive RK4 and regular RK4
+rod = plt.Circle((0.512,0.5),radius=0.0025,color='red')
+axs = plt.figure(figsize=[9,7])
+axs.add_artist(rod)
+plt.plot(xs,ys,'k.',label='Static Step Size')
+plt.plot(xpoints2,ypoints2,'y.',label='Adaptive Step Size')
+plt.legend()
+plt.xticks(size=16)
+plt.yticks(size=16)
+plt.xlabel('x',size=18)
+plt.ylabel('y',size=18)
+plt.savefig('Q1a')
+plt.show()
+
+#compute the size of the time step as a function of time as in lab handout page 5
+dtpoints = np.array(tpoints[1:]) - np.array(tpoints[:-1])
+#plot the size of the time step as a function of time as in lab handout page 5
+plt.figure(figsize=[8,6])
+plt.plot(tpoints[:50], dtpoints[:50],color='black')
+plt.xticks(size=16)
+plt.yticks(size=16)
+plt.xlabel('t',size=18)
+plt.ylabel('t step size',size=18)
+plt.savefig('Q1c')
