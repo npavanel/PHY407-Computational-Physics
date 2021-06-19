@@ -4,8 +4,8 @@ This repository will hold all lab work for PHY407, allowing for easy collaborati
 
 Topics covered by myself are as follows:
 
-Lab 1: Numerical Solutions for Planetary Orbits & Speed Tests: Loops vs Linear Algebra Libraries. 
-Lab 2: Numerical Error, Numerical Integration, and Simulated Diffraction Patterns. 
+Lab 1: Numerical Solutions for Planetary Orbits & Speed Tests: Loops vs Linear Algebra Libraries. <br />
+Lab 2: Numerical Error, Numerical Integration, and Simulated Diffraction Patterns. <br />
 Lab 3: Classical and Quantum Oscillators, and Elevation Maps with Gradients. 
 Lab 4: Numerical Solutinos to Non-linear Equations. 
 Lab 5: Applications of Fourier Transforms: The Sunspot Cycle and Dow Jones Data. 
