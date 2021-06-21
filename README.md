@@ -1,7 +1,4 @@
 # PHY407-Computational-Physics
-This repository will hold all lab work for PHY407, allowing for easy collaboration.
-
-
 Topics covered by myself are as follows:
 
 Lab 1: Numerical Solutions for Planetary Orbits & Speed Tests: Loops vs Linear Algebra Libraries. <br />
